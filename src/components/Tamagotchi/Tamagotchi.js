@@ -54,7 +54,7 @@ export default class Tamagotchi extends Component {
     let self = this
     document.onkeyup = function (e) {
       if (e.keyCode === 38) {
-        if (self.state.pokemon.position.top > 200) {
+        if (self.state.pokemon.position.top > 180) {
           let newState = self.state.pokemon
           newState.position.top = self.state.pokemon.position.top - 20
           self.setState({
@@ -70,7 +70,7 @@ export default class Tamagotchi extends Component {
           })
         }
       } else if (e.keyCode === 37) {
-        if (self.state.pokemon.position.left > 280) {
+        if (self.state.pokemon.position.left > 320) {
           let newState = self.state.pokemon
           newState.position.left = self.state.pokemon.position.left - 20
           self.setState({
@@ -78,7 +78,7 @@ export default class Tamagotchi extends Component {
           })
         }
       } else if (e.keyCode === 39) {
-        if (self.state.pokemon.position.left < 700) {
+        if (self.state.pokemon.position.left < 720) {
           let newState = self.state.pokemon
           newState.position.left = self.state.pokemon.position.left + 20
           self.setState({
@@ -191,11 +191,17 @@ export default class Tamagotchi extends Component {
 
   walk () {
     if (this.state.pokemon.energy > 0) {
-      this.setState({
-        isWalk: !this.state.isWalk
+      let newState = this.state.pokemon
+      newState.img = this.props.pokemon.type + '-go'
+      newState.imgType = 'gif'
+      this.setState((prevState) => {
+        return {
+          pokemon: newState,
+          isWalk: !prevState.isWalk
+        }
       }, () => {
-        let newState = this.state.pokemon
-        if (!this.state.isWalk) {
+        setTimeout(() => {
+          let newState = this.state.pokemon
           newState.energy = --newState.energy
           newState.img = this.props.pokemon.type
           newState.imgType = 'png'
@@ -203,14 +209,7 @@ export default class Tamagotchi extends Component {
             pokemon: newState,
             check: false
           })
-        } else {
-          newState.img = this.props.pokemon.type + '-go'
-          newState.imgType = 'gif'
-          this.setState({
-            pokemon: newState,
-            check: true
-          })
-        }
+        }, 6000)
       })
     }
   }
@@ -313,6 +312,10 @@ export default class Tamagotchi extends Component {
             <li onClick={this.sleep}>Sleep</li>
             <li onClick={this.dance}>Dance</li>
           </ul>
+          <div className='instruction-box'>
+            <p>You can control the Pokémon with these keys</p>
+            <img src={require(`../../../assets/images/arrowKeys.png`)} alt='arrow keys' />
+          </div>
         </div>
         <div
           className='pokemon'
@@ -324,8 +327,8 @@ export default class Tamagotchi extends Component {
           }
           />
         </div>
-        <embed src={this.state.music} autostart='true' loop='true' width='2' height='0'/>
-        <Spinner display={this.state.isSpinner}/>
+        <embed src={this.state.music} autostart='true' loop='true' width='2' height='0' />
+        <Spinner display={this.state.isSpinner} />
       </div>
     )
   }
